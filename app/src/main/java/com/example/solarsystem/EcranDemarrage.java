@@ -19,7 +19,9 @@ public class EcranDemarrage extends View {
     private Bitmap btnModeDoigteDown;
     private Bitmap btnModePivoUp;
     private Bitmap btnModePivoDown;
-    private boolean PlayBtnState;
+    private Bitmap bgImage;     //TODO:Trouver comment mettre un backgroundImage
+    private boolean PlayBtnStateTouch;
+    private boolean PlayBtnStatePivo;
     private Context MyContext;
     private Paint crayon;
 
@@ -47,6 +49,7 @@ public class EcranDemarrage extends View {
         btnModeDoigteDown = BitmapFactory.decodeResource(getResources(), R.drawable.bouton_doigte_down);
         btnModePivoUp = BitmapFactory.decodeResource(getResources(), R.drawable.bouton_mode_pivo_up);
         btnModePivoDown = BitmapFactory.decodeResource(getResources(), R.drawable.bouton_mode_pivo_down);
+        bgImage = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
 
         //Log.e("logo",String.valueOf(PageLogo.getWidth()) + " width");
         //Log.e("logo",String.valueOf(PageLogo.getHeight()) + " height");
@@ -60,14 +63,23 @@ public class EcranDemarrage extends View {
         canvas.drawBitmap(PageLogo,(screenW - PageLogo.getWidth())/2,(int)(screenH*0.10),null);
         //canvas.drawText("AlienSolarSytème", (float)Paint.measureText("hello"), canvas.getHeight()/2 - crayon.descent() + crayon.ascent() / 2);
 
-        //Changement de l'état des boutons quand on appuis
-        if(PlayBtnState)
+        //Changement de l'état des boutons quand on appuis et positionnement
+        if(PlayBtnStateTouch)
         {
-            canvas.drawBitmap(btnModeDoigteDown,(screenW - btnModeDoigteDown.getWidth()) / 2,(int)(screenH*0.75),null);
+            canvas.drawBitmap(btnModeDoigteDown,(screenW - btnModeDoigteDown.getWidth()) / 6,(int)(screenH*0.75),null);
         }
         else
         {
-            canvas.drawBitmap(btnModeDoigteUp,(screenW - btnModeDoigteUp.getWidth()) / 2, (int)(screenH*0.75),null);
+            canvas.drawBitmap(btnModeDoigteUp,(screenW - btnModeDoigteUp.getWidth()) / 6, (int)(screenH*0.75),null);
+        }
+
+        if(PlayBtnStatePivo)
+        {
+            canvas.drawBitmap(btnModePivoDown,(float)((screenW - btnModePivoDown.getWidth()) / 1.20),(int)(screenH*0.75),null);
+        }
+        else
+        {
+            canvas.drawBitmap(btnModePivoUp, (float) ((screenW - btnModePivoUp.getWidth()) / 1.20), (int)(screenH*0.75),null);
         }
 
     }
@@ -84,21 +96,28 @@ public class EcranDemarrage extends View {
         switch(action)
         {
             case  MotionEvent.ACTION_DOWN:
-                if((touchX > (screenW - btnModeDoigteUp.getWidth())/2 && touchX < ((screenW - btnModeDoigteUp.getWidth())/2) +
+                if((touchX > (screenW - btnModeDoigteUp.getWidth())/6 && touchX < ((screenW - btnModeDoigteUp.getWidth())/6) +
                         btnModeDoigteUp.getWidth()) && ((touchY > (int)(screenH*0.75)) &&
                         (touchY < ((int)(screenH*0.75) + btnModeDoigteUp.getHeight()))))
                 {
-                    PlayBtnState = true;
+                    PlayBtnStateTouch = true;
+                }
+                if((touchX > (float) ((screenW - btnModePivoUp.getWidth())/1.20)&& touchX < (float)((screenW - btnModePivoUp.getWidth())/1.20) +
+                        btnModePivoUp.getWidth()) && ((touchY > (int)(screenH*0.75)) &&
+                        (touchY < ((int)(screenH*0.75) + btnModePivoUp.getHeight()))))
+                {
+                    PlayBtnStatePivo = true;
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                if(PlayBtnState)
+                if(PlayBtnStateTouch)
                 {
                     Intent intent = new Intent(MyContext,JeuxOuvert.class);
                     MyContext.startActivity(intent);
                 }
-                PlayBtnState = false;
+                PlayBtnStateTouch = false;
+                PlayBtnStatePivo  = false;
                 break;
         }
         invalidate();
