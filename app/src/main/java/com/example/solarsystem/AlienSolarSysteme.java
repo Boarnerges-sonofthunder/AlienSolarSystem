@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,10 +28,11 @@ public class AlienSolarSysteme extends View {
     private Context myContext;
     private boolean fin;
     private AstreCeleste[] astreCeleste = new AstreCeleste[5];
-    private Bitmap vaisseau;
+    private Bitmap vaisseau,astre;
     private int screenW;
     private int screenH;
     AstreCeleste astrCel = new AstreCeleste();
+
 
     //Recuperation des dimensions de l'écran et attribution de ces dimensions à nos variables, à chaque changement de taille
     @Override
@@ -43,6 +46,8 @@ public class AlienSolarSysteme extends View {
 
     }
 
+
+
     public AlienSolarSysteme(Context context)
     {
         super(context);
@@ -51,6 +56,8 @@ public class AlienSolarSysteme extends View {
         fin = false;
         compteur = 0;
         vaisseau = BitmapFactory.decodeResource(getResources(), R.drawable.vaisseau_spatial);
+        astre = BitmapFactory.decodeResource(getResources(), R.drawable.arcas);
+
 
 
         //On crée une boucle pour récupérer dans un tableau les astres
@@ -67,10 +74,13 @@ public class AlienSolarSysteme extends View {
         //Afficher les astres
         //Creation d'une liste qui va recevoir les données du astreDBHelper
         List<AstreCeleste> tousLesAstre = astreDbHelper.getAll();
+
         //Toast.makeText(myContext,tousLesAstre.toString(),Toast.LENGTH_SHORT).show();
 
         //Creation d'un arrayAdapter
         ArrayAdapter astreArrayAdapter = new ArrayAdapter<AstreCeleste>(myContext,AlienSolarSysteme.generateViewId(),tousLesAstre);
+        ListView listAstre = new ListView(myContext);
+        listAstre.setAdapter(astreArrayAdapter);
 
     }
 
@@ -81,15 +91,13 @@ public class AlienSolarSysteme extends View {
         vaisseauX = (screenW - vaisseau.getWidth())/2;
         vaisseauY = (int)(screenH*0.90);
         //On dessine le vaisseau selon les dimension reçus
-        canvas.drawBitmap(vaisseau,vaisseauX,vaisseauY,null);
-        //canvas.drawBitmap(vaisseau,(screenW - vaisseau.getWidth())/2,(int)(screenH*0.90),null);
-        //TODO: revoir le dessin du vaisseau
+        //canvas.drawBitmap(vaisseau,vaisseauX,vaisseauY,null);
+        canvas.drawBitmap(vaisseau,(screenW - vaisseau.getWidth())/2,(int)(screenH*0.90),null);
 
         //On crée une boucle pour dessiner les astres en appelant la methode onDraw de la classe AstreCeleste
         for(int i=0;i<5;i++)
         {
             astreCeleste[i].onDraw(canvas);
-
         }
 
         //On envois un message si le compteur arrive à 5

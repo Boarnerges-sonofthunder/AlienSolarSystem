@@ -22,13 +22,18 @@ public class AstreCeleste {
     private int radius;
     private static final int[] palette = {Color.CYAN,Color.LTGRAY,Color.BLUE,Color.GREEN,Color.RED};
 
-    public AstreCeleste(int id,String nom, int taille, String couleur, boolean status, int image) {
+    public AstreCeleste(int image) {
+        this.image = image;
+    }
+
+    public AstreCeleste(int id, String nom, int taille, String couleur, boolean status, int image, int posX, int posY) {
         this.id = id;
         this.nom = nom;
         this.taille = taille;
         this.couleur = couleur;
         this.status = status;
         this.image = image;
+        this.posX = posX;
     }
 
     @Override
@@ -117,7 +122,7 @@ public class AstreCeleste {
 
     protected void onDraw(Canvas canvas)
     {
-        //canvas.drawCircle(posX,posY,radius,crayon);
+        canvas.drawCircle(posX,posY,radius,crayon);
 
     }
 }

@@ -5,7 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -21,14 +24,16 @@ public class AstreDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COULEUR = "Couleur";
     public static final String COLUMN_STATUS = "Status";
     public static final String COLUMN_IMAGE = "Image";
+    public static final String COLUMN_POS_X = "posX";
+    public static final String COLUMN_POS_Y = "posY";
 
     public AstreDBHelper(@Nullable Context context) {
-        super(context,"AstreSolarSytemeDB.db",null,1);
+        super(context,"AstreSolarSytemeDB.bd",null,1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE IF NOT EXISTS " + ASTRE_CELESTE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_NOM + " TEXT," + COLUMN_TAILLE + " INTEGER," + COLUMN_COULEUR + " TEXT," + COLUMN_STATUS + " BIT," + COLUMN_IMAGE + " INTEGER)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + ASTRE_CELESTE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_NOM + " TEXT," + COLUMN_TAILLE + " INTEGER," + COLUMN_COULEUR + " TEXT," + COLUMN_STATUS + " BIT," + COLUMN_IMAGE + " INTEGER," + COLUMN_POS_X + " INTEGER," + COLUMN_POS_Y + " INTEGER)";
 
         db.execSQL(sql);
     }
@@ -42,12 +47,14 @@ public class AstreDBHelper extends SQLiteOpenHelper {
         cv1.put(COLUMN_NOM,astreCeleste.getNom());
         astreCeleste.setTaille(40);
         cv1.put(COLUMN_TAILLE, astreCeleste.getTaille());
-        astreCeleste.setCouleur("Transparent");
+        astreCeleste.setCouleur(String.valueOf(Color.GRAY));
         cv1.put(COLUMN_COULEUR, astreCeleste.getCouleur());
         astreCeleste.setStatus(true);
         cv1.put(COLUMN_STATUS,astreCeleste.isStatus());
-        astreCeleste.setImage(R.drawable.arcas);
+        //astreCeleste.setImage(R.drawable.arcas);
         cv1.put(COLUMN_IMAGE,astreCeleste.getImage());
+        cv1.put(COLUMN_POS_X,astreCeleste.getPosX());
+        cv1.put(COLUMN_POS_Y,astreCeleste.getPosY());
 
         long insert = db.insert(ASTRE_CELESTE_TABLE, null, cv1);
         if(insert == -1)
@@ -96,16 +103,19 @@ public class AstreDBHelper extends SQLiteOpenHelper {
                 String astreCouleur = cursor.getString(3);
                 boolean astreStatus = cursor.getInt(4) == 1 ? true:false;
                 int astreImage = cursor.getInt(5);
+                int astrePosX = cursor.getInt(6);
+                int astrePosY = cursor.getInt(7);
+
 
                 //creation d'un objet AstreCeleste et lui attribuer les curseurs
-                AstreCeleste newAstre = new AstreCeleste(astreId,astreNom,astreTaille,astreCouleur,astreStatus,astreImage);
+                AstreCeleste newAstre = new AstreCeleste(astreId,astreNom,astreTaille,astreCouleur,astreStatus,astreImage,astrePosX,astrePosY);
                 //ajout de l'astre dans la liste
                 returnList.add(newAstre);
 
             }while(cursor.moveToNext());
         }
 
-        //Fermer le cursuer et la db
+        //Fermer le curseur et la db
         cursor.close();
         db.close();
         return returnList;
